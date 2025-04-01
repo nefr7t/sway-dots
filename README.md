@@ -1,5 +1,7 @@
 # Dotfiles for my swaywm and neovim
 
+![Example Screenshot](screenshot.webp)
+
 ## Instructions
 
 Put all the directories under $HOME/.config/, and install required packages.
