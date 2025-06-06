@@ -4,12 +4,17 @@
 # sway
 # swaybg
 # waybar
-# brightnessctl-utils (brightnessctl)
+# brightnessctl-utils
 # fuzzel
 # swayidle
 # gtklock
 # grim
+# slurp
 # grimshot
+# playerctl
+# bemoji
+# swayr (cargo)
+# sway-notification-center
 # Add USER to group "video" and "input"
 
 ### Variables
@@ -33,25 +38,13 @@ include /etc/sway/config-vars.d/*
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpapper_Blue_1920x1080.png fill
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Example configuration:
 #
 #   output HDMI-A-1 resolution 1920x1080 position 1920,0
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
-
-output HDMI-A-1 pos 0 0
-output eDP-1 pos 1680 0
-
-workspace 1 output HDMI-A-1
-workspace 2 output HDMI-A-1
-workspace 3 output HDMI-A-1
-workspace 4 output HDMI-A-1
-workspace 8 output eDP-1
-workspace 9 output eDP-1
-
-### Idle configuration
 #
 # Example configuration:
 #
@@ -74,12 +67,26 @@ workspace 9 output eDP-1
        click_method clickfinger
    }
 #
-
-# Set English and Thai layout, and switch with Super + Space
+   input type:pointer {
+       accel_profile "flat"
+	   pointer_accel -0.4
+   }
+#
+# Set English and Thai layout, and switch with Caps Lock
   input type:keyboard {
     xkb_layout us,th
     xkb_options grp:caps_toggle
 }
+
+# Add environment variable for bemoji to use fuzzel as launcher in .bashrc
+# export BEMOJI_PICKER_CMD='fuzzel --dmenu'
+exec_always export BEMOJI_PICKER_CMD='fuzzel --dmenu'
+bindsym $mod+Ctrl+Space exec export BEMOJI_PICKER_CMD='fuzzel --dmenu' && ~/.local/bin/bemoji 
+
+# use swayr (cargo) to switch window
+exec_always ~/.cargo/bin/swayrd
+bindsym $mod+Backslash exec ~/.cargo/bin/swayr switch-window
+
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
 
@@ -91,7 +98,7 @@ workspace 9 output eDP-1
     bindsym $mod+Return exec $term
 
     # Kill focused window
-    bindsym $mod+Shift+q kill
+    bindsym $mod+Backspace kill
 
     # Start your launcher
     bindsym $mod+d exec $menu
@@ -157,6 +164,7 @@ workspace 9 output eDP-1
     bindsym $mod+Shift+8 move container to workspace number 8
     bindsym $mod+Shift+9 move container to workspace number 9
     bindsym $mod+Shift+0 move container to workspace number 10
+}
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
 #
@@ -165,8 +173,8 @@ workspace 9 output eDP-1
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+    # bindsym $mod+b splith
+    # bindsym $mod+v splitv
 
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
@@ -176,8 +184,9 @@ workspace 9 output eDP-1
     # Make the current focus fullscreen
     bindsym $mod+f fullscreen
 
-    # Toggle the current focus between tiling and floating mode
+    # Toggle the current focus between tiling and floating mode (Mod+v, like Hyprland)
     bindsym $mod+Shift+Delete floating toggle
+    bindsym $mod+v floating toggle
 
     # Swap focus between the tiling area and the floating area
     bindsym $mod+Tab+space focus mode_toggle
@@ -220,17 +229,21 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
-
 #
-# Screenshot with grim and slurp
+# Screenshot with grim and grimshot
 #
 bindsym $mod+Print exec grimshot save screen
 bindsym $mod+Shift+print exec grimshot save window
-
+#
 include /etc/sway/config.d/*
 
 # Use Waybar
 bar swaybar_command waybar
+
+# Use Swayidle to lock screen before suspend
+
+# exec swayidle \
+#     before-sleep 'gtklock -d'
 
 # Set volume up/down, mute, and brightness up/down (User must be in 'video' and 'input' group)
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +2%
@@ -239,10 +252,22 @@ bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86MonBrightnessUp exec brightnessctl s +5%
 bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
 
+# Set external keyboard media control keys (Install playerctl)
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# use autotiling script (pip)
+exec_always ~/.local/bin/autotiling
+
+# run daemon for sway-notification-center
+exec swaync
+bindsym $mod+n exec swaync-client -t
+
 # Set border color
-client.focused #282a36 #282a36cc #ffffff #ffffff #282a36
-client.focused_inactive #222222 #222222cc #ffffff #ffffff #222222
-client.unfocused #222222 #222222cc #ffffff #ffffff #222222
+client.focused #282a36 #282a36cc #ffffff #3f4c57 #282a36cc
+client.focused_inactive #222222 #222222cc #ffffff #3f4c57 #282a36cc
+client.unfocused #222222 #222222cc #ffffff #3f4c57 #282a36cc
 
 # touchpad gestures
 bindgesture swipe:right workspace prev
@@ -253,10 +278,3 @@ gaps inner 8
 
 bindsym $mod+tab workspace next_on_output 
 bindsym $mod+Shift+tab workspace prev_on_output
-
-set $lock 'gtklock -d'
-bindswitch --reload --locked lid:on exec $lock
-
-# set $opacity 0.95
-# for_window [class=".*"] opacity $opacity
-# for_window [app_id=".*"] opacity $opacity
