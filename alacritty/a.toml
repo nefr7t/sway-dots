@@ -1,0 +1,16 @@
+# config.toml - для редактирования, не для Alacritty
+[window]
+# Прозрачность фона: 0.0 = полностью прозрачный, 1.0 = непрозрачный
+background_opacity = 0.8
+
+[colors.primary]
+background = "0x000000"
+foreground = "0xFFFFFF"
+
+# Остальные настройки оставлены как дефолтные
+[font]
+normal_family = "monospace"
+size = 11.0
+
+[scrolling]
+history = 10000

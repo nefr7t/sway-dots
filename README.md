@@ -1,6 +1,5 @@
-# Dotfiles for my swaywm, neovim, cava, and fastfetch
+# Reamke of senni dotfiles
 
-(Looking for wallpapers for your new rice? [Check my wallpapers out!](https://github.com/senni-huemwang/backgrounds/))
 
 ![Example Screenshot 1](Screenshot1.png)
 ![Example Screenshot 2](Screenshot2.png)
@@ -11,10 +10,11 @@
 Put all the directories under $HOME/.config/, and install required packages.
 
 - cava
+- yazi
 - fastfetch
 - neovim
 - vim-plug
-- foot
+- foot / alacritty
 - sway
 - autotiling (This config assumes autotiling is stored in ~/.local/bin/)
 - fonts-awesome
@@ -48,8 +48,8 @@ In order to use the custom fastfetch config, run `fastfetch` with an option to a
 
 | Keybind                                       | Function                                                                                     |
 |-----------------------------------------------|----------------------------------------------------------------------------------------------|
-| Super + Enter                                 | Open terminal (foot)                                                                         |
-| Super + Backspace                             | Kill window                                                                                  |
+| Super + Q                                 |     Open terminal (foot)                                                                         |
+| Super + C                             | Kill window                                                                                  |
 | Super + D                                     | Launch Application Launcher (fuzzel)                                                         |
 | Super + Shift + E                             | Exit sway session  (Alternatively, you can run `swaymsg exit` to skip confirmation dialogue. |
 | Super + H/J/K/L                               | Move focus between windows                                                                   |
